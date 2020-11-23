@@ -1,0 +1,27 @@
+#ifndef _NII_JSON_
+#define _NII_JSON_
+
+#include "Json/entities.hpp"
+
+namespace nii::json
+{
+    class json
+    {
+     using j_wrapper = entities::wrapper;
+     
+    public:
+
+        inline j_wrapper operator[](const std::string& str) {
+            return _object.get(str);
+        }
+
+        inline std::string serialize() {
+            return _object.serialize();
+        }
+
+    private:
+        entities::object _object;
+    };
+}// namespace nii::json
+    
+#endif
