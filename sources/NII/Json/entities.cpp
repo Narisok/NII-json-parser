@@ -132,6 +132,12 @@ namespace nii::json::entities
         }
     }
 
+    void entity_handler::setValue(entity * _entity)
+    {
+        destroyEntity();
+        this->_entity = _entity; 
+    }
+
     void entity_handler::setValue()
     {
         destroyEntity();
@@ -185,7 +191,7 @@ namespace nii::json::entities
     
     //================================ NUMBER ================================//
 
-    number::number(int i) 
+    number::number(double i) 
         : entity()
         , value(i)
     {count++;}
@@ -230,7 +236,7 @@ namespace nii::json::entities
 
 
 
-     //================================ NUMBER ================================//
+     //================================ BOOLEAN ================================//
 
     boolean::boolean(bool b) 
         : entity()
@@ -312,6 +318,17 @@ namespace nii::json::entities
 
     object::~object()
     {count--;}
+
+    object::object(object && other)
+        : entity()
+        , value(std::move(other.value))
+    {count++;}
+
+    object& object::operator=(object && other)
+    {
+        value = std::move(other.value);
+        return *this;
+    }
 
     wrapper object::get(const std::string& str)
     {

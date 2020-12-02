@@ -44,6 +44,7 @@ namespace entities
         void setValue(const std::string&);
         void setValue(std::string&&);
         void setValue(bool);
+        void setValue(entity *);
         void setValue();
 
         void addToArray(int);
@@ -63,6 +64,7 @@ namespace entities
     {
         inline wrapper(entity_handler& handle) : handle(handle) {}
         inline ~wrapper() {}
+
 
         template<class _T>
         inline wrapper& operator=(_T&&elem) {
@@ -88,10 +90,7 @@ namespace entities
             return *this;
         }
 
-        inline wrapper& operator=(entity* _entity) {
-            handle._entity = _entity;
-            return *this;
-        }
+        
 
 
         inline wrapper operator[](const char* str) {
@@ -126,7 +125,7 @@ namespace entities
         friend wrapper;
         friend entity_handler;
 
-    protected:
+    public:
         entity();
         virtual ~entity();
 
@@ -165,14 +164,14 @@ namespace entities
     class number : public entity
     {
         friend entity_handler;
-        friend void deserializator::parse(const std::string&);
-
-        number(int);
+    public:
+        number(double);
         ~number();
 
         number(const number&) = delete;
         number(number&&) = delete;
-        
+
+    private:
         void set(int) override;
         void set(double) override;
         void set(bool) override;
@@ -193,14 +192,13 @@ namespace entities
     class boolean : public entity
     {
         friend entity_handler;
-        friend void deserializator::parse(const std::string&);
-
+    public:
         boolean(bool);
         ~boolean();
 
         boolean(const boolean&) = delete;
         boolean(boolean&&) = delete;
-        
+    private:
         void set(int) override;
         void set(bool) override;
         
@@ -219,7 +217,6 @@ namespace entities
     class string : public entity
     {
         friend entity_handler;
-        friend void deserializator::parse(const std::string&);
 
     public: 
         string(const std::string&);
@@ -247,19 +244,24 @@ namespace entities
     {
         friend entity_handler;
         friend nii::json::json;
-        friend void deserializator::parse(const std::string&);
 
+    public:
         object();
         ~object();
+        object(object&&);
 
         object(const object&) = delete;
-        object(object&&) = delete;
-        
 
+        object & operator=(object&&);
+
+        object & operator=(const object&) = delete;
+        
+    // private:
         wrapper get(const std::string& str) override;
 
 
         std::string serialize() override;
+
 
         std::map<std::string, entity_handler> value;
 
@@ -270,15 +272,14 @@ namespace entities
     class array : public entity
     {
         friend entity_handler;
-        friend void deserializator::parse(const std::string&);
-        
+    public:
         array();
         ~array();
 
         array(const array&) = delete;
         array(array&&) = delete;
 
-
+    // private:
         wrapper get(int) override;
 
         std::string serialize() override;
