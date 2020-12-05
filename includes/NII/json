@@ -1,8 +1,8 @@
-#ifndef _NII_JSON_
-#define _NII_JSON_
+#ifndef NII_JSON_HEADER
+#define NII_JSON_HEADER
 
-#include "Json/entities.hpp"
-#include "Json/deserializator.hpp"
+#include "json-files/entities.hpp"
+#include "json-files/deserializator.hpp"
 
 
 namespace nii::json
