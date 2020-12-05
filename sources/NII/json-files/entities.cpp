@@ -194,10 +194,18 @@ namespace nii::json::entities
     number::number(double i) 
         : entity()
         , value(i)
-    {count++;}
+    {
+        #ifdef NII_DEBUG
+            count++;
+        #endif
+    }
 
     number::~number()
-    {count--;}
+    {
+        #ifdef NII_DEBUG
+            count--;
+        #endif
+    }
 
     void number::set(int i)
     {
@@ -241,10 +249,18 @@ namespace nii::json::entities
     boolean::boolean(bool b) 
         : entity()
         , value(b)
-    {count++;}
+    {
+        #ifdef NII_DEBUG
+            count++;
+        #endif
+    }
 
     boolean::~boolean()
-    {count--;}
+    {
+        #ifdef NII_DEBUG
+            count--;
+        #endif
+    }
 
     void boolean::set(int i)
     {
@@ -278,15 +294,27 @@ namespace nii::json::entities
     string::string(const std::string& str) 
         : entity()
         , value(str)
-    {count++;}
+    {
+        #ifdef NII_DEBUG
+            count++;
+        #endif
+    }
 
     string::string(std::string&& str) 
         : entity()
         , value(std::move(str))
-    {count++;}
+    {
+        #ifdef NII_DEBUG
+            count++;
+        #endif
+    }
 
     string::~string()
-    {count--;}
+    {
+        #ifdef NII_DEBUG
+            count--;
+        #endif
+    }
 
     void string::set(const std::string& str)
     {
@@ -314,15 +342,27 @@ namespace nii::json::entities
     object::object() 
         : entity()
         , value()
-    {count++;}
+    {
+        #ifdef NII_DEBUG
+            count++;
+        #endif
+    }
 
     object::~object()
-    {count--;}
+    {
+        #ifdef NII_DEBUG
+            count--;
+        #endif
+    }
 
     object::object(object && other)
         : entity()
         , value(std::move(other.value))
-    {count++;}
+    {
+        #ifdef NII_DEBUG
+            count++;
+        #endif
+    }
 
     object& object::operator=(object && other)
     {
@@ -353,10 +393,18 @@ namespace nii::json::entities
     array::array()
         : entity()
         , value()
-    {count++;}
+    {
+        #ifdef NII_DEBUG
+            count++;
+        #endif
+    }
 
     array::~array()
-    {count--;}
+    {
+        #ifdef NII_DEBUG
+            count--;
+        #endif
+    }
 
     wrapper array::get(int i)
     {

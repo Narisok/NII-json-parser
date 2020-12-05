@@ -10,7 +10,9 @@
 
 #include "deserializator.hpp"
 
-namespace nii::json
+namespace nii
+{
+namespace json
 {
     class json;
 namespace entities
@@ -185,8 +187,10 @@ namespace entities
 
         double value;
 
-        public: inline static int GetCount() { return count; }
-        inline static int count = 0;
+        #ifdef NII_DEBUG
+            public: inline static int GetCount() { return count; }
+            inline static int count = 0;
+        #endif
     };
     
     class boolean : public entity
@@ -210,8 +214,10 @@ namespace entities
 
         bool value;
 
-        public: inline static int GetCount() { return count; }
-        inline static int count = 0;
+        #ifdef NII_DEBUG
+            public: inline static int GetCount() { return count; }
+            inline static int count = 0;
+        #endif
     };
 
     class string : public entity
@@ -236,8 +242,10 @@ namespace entities
 
         std::string value;
 
-        public: inline static int GetCount() { return count; }
-        inline static int count = 0;
+        #ifdef NII_DEBUG
+            public: inline static int GetCount() { return count; }
+            inline static int count = 0;
+        #endif
     };
 
     class object : public entity
@@ -265,8 +273,10 @@ namespace entities
 
         std::map<std::string, entity_handler> value;
 
-        public: inline static int GetCount() { return count; }
-        inline static int count = 0;
+        #ifdef NII_DEBUG
+            public: inline static int GetCount() { return count; }
+            inline static int count = 0;
+        #endif
     };
 
     class array : public entity
@@ -292,7 +302,11 @@ namespace entities
 
         std::vector<entity_handler> value;
 
-        public: inline static int GetCount() { return count; }
-        inline static int count = 0;
+        #ifdef NII_DEBUG
+            public: inline static int GetCount() { return count; }
+            inline static int count = 0;
+        #endif
     };
-}}
+}
+}
+}
