@@ -5,7 +5,8 @@
 #include "json-files/deserializator.hpp"
 
 
-namespace nii::json
+namespace nii {
+namespace json 
 {
     class json
     {
@@ -44,6 +45,6 @@ namespace nii::json
     private:
         entities::object _object;
     };
-}// namespace nii::json
+} }// namespace nii::json
     
 #endif
