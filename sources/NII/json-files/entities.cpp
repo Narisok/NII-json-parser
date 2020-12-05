@@ -1,6 +1,8 @@
 #include <NII/json-files/entities.hpp>
 
-namespace nii::json::entities
+namespace nii {
+namespace json {
+namespace entities
 {
 
     //================================ ENTITY ================================//
@@ -433,4 +435,4 @@ namespace nii::json::entities
         if(i > value.size()) value.resize(i);
     }
 
-}
+} }}

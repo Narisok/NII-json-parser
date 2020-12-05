@@ -6,7 +6,9 @@
 #include <cctype>
 #include <memory>
 
-namespace nii::json::deserializator
+namespace nii {
+namespace json {
+namespace deserializator 
 {
     namespace entities = nii::json::entities;
     using j_object = entities::object;
@@ -256,4 +258,5 @@ namespace nii::json::deserializator
 
 
 
-} //namespace nii::json::deserializator
+} }}//namespace nii::json::deserializator
+
