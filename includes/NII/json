@@ -20,13 +20,17 @@ namespace nii::json
         inline json(const std::string& str)
                 :_object()
             {
-                try{
-                    auto obj = deserializator::parse(str);
-                    _object = std::move(*obj);
-                    delete obj;
-                } catch(const char*str) { std::cout << "ERROR: " << str << std::endl; }
-                catch(std::exception& exeption) { std::cout << "ERROR: " << exeption.what() << std::endl;}
-                catch(...) { std::cout << "ERROR has been ocured" << std::endl; }
+                auto obj = deserializator::parse(str);
+                _object = std::move(*obj);
+                delete obj;
+            }
+
+        inline json& operator=(const std::string& str)
+            {
+                auto obj = deserializator::parse(str);
+                _object = std::move(*obj);
+                delete obj;
+                return *this;
             }
 
         inline j_wrapper operator[](const std::string& str) {
