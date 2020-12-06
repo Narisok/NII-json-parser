@@ -10,7 +10,7 @@
 
 #include "deserializator.hpp"
 
-#define NII_DEBUG
+// #define NII_DEBUG
 
 namespace nii
 {
@@ -133,18 +133,18 @@ namespace entities
     struct ObjectWrapper : wrapper
     {
 
-        inline auto begin();
+        inline auto begin() -> std::map<std::string, entity_handler>::iterator;
 
-        inline auto end();
+        inline auto end() -> std::map<std::string, entity_handler>::iterator;
         
     };
 
     struct ArrayWrapper : wrapper
     {
 
-        inline auto begin();
+        inline auto begin() -> std::vector<entity_handler>::iterator;
 
-        inline auto end();
+        inline auto end() -> std::vector<entity_handler>::iterator;
         
     };
 
@@ -342,11 +342,11 @@ namespace entities
 
         Object & operator=(const Object&) = delete;
 
-        inline auto begin() {
+        inline auto begin() -> std::map<std::string, entity_handler>::iterator {
             return value.begin();
         }
 
-        inline auto end() {
+        inline auto end() -> std::map<std::string, entity_handler>::iterator {
             return value.end();
         }
         
@@ -368,11 +368,11 @@ namespace entities
         #endif
     };
 
-    auto ObjectWrapper::begin() {
+    auto ObjectWrapper::begin() -> std::map<std::string, entity_handler>::iterator {
         return dynamic_cast<Object*>(handle._entity)->begin();
     }
 
-    auto ObjectWrapper::end() {
+    auto ObjectWrapper::end() -> std::map<std::string, entity_handler>::iterator {
         return dynamic_cast<Object*>(handle._entity)->end();
     }
 
@@ -387,11 +387,11 @@ namespace entities
         Array(Array&&) = delete;
 
 
-        inline auto begin() {
+        inline auto begin() -> std::vector<entity_handler>::iterator {
             return value.begin();
         }
 
-        inline auto end() {
+        inline auto end() -> std::vector<entity_handler>::iterator {
             return value.end();
         }
         
@@ -416,11 +416,11 @@ namespace entities
         #endif
     };
 
-    auto ArrayWrapper::begin() {
+    auto ArrayWrapper::begin() -> std::vector<entity_handler>::iterator {
         return dynamic_cast<Array*>(handle._entity)->begin();
     }
 
-    auto ArrayWrapper::end() {
+    auto ArrayWrapper::end() -> std::vector<entity_handler>::iterator {
         return dynamic_cast<Array*>(handle._entity)->end();
     }
 }
