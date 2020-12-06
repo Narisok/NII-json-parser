@@ -8,12 +8,12 @@ namespace nii
     namespace json
     {   
         namespace entities {
-            class object;
+            class Object;
         }
         
         namespace deserializator
         {
-            nii::json::entities::object* parse(const std::string& str);
+            nii::json::entities::Object* parse(const std::string& str);
 
         }
 

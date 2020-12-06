@@ -42,8 +42,16 @@ namespace json
             return _object.serialize();
         }
 
+        inline auto begin() {
+            return _object.begin();
+        }
+
+        inline auto end() {
+            return _object.end();
+        }
+
     private:
-        entities::object _object;
+        entities::Object _object;
     };
 } }// namespace nii::json
     

@@ -11,11 +11,11 @@ namespace json {
 namespace deserializator 
 {
     namespace entities = nii::json::entities;
-    using j_object = entities::object;
-    using j_array = entities::array;
-    using j_number = entities::number;
-    using j_string = entities::string;
-    using j_boolean = entities::boolean;
+    using j_object = entities::Object;
+    using j_array = entities::Array;
+    using j_number = entities::Number;
+    using j_string = entities::String;
+    using j_boolean = entities::Boolean;
 
     using iterator = std::string::const_iterator;
     

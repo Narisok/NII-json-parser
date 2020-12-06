@@ -10,6 +10,8 @@
 
 #include "deserializator.hpp"
 
+#define NII_DEBUG
+
 namespace nii
 {
 namespace json
@@ -18,15 +20,19 @@ namespace json
 namespace entities
 {
     class entity;
-    class object;
+    class Object;
     class wrapper;
-    class array;
+    class ObjectWrapper;
+    class ArrayWrapper;
+    class Array;
 
     class entity_handler
     {
-        friend object;
-        friend array;
+        friend Object;
+        friend Array;
         friend wrapper;
+        friend ObjectWrapper;
+        friend ArrayWrapper;
 
 
         
@@ -34,7 +40,7 @@ namespace entities
         public:     explicit entity_handler(entity*);
                     entity_handler();
                     entity_handler(entity_handler&&);
-        public:     ~entity_handler();
+                    ~entity_handler();
 
         entity_handler(const entity_handler&) = delete;
 
@@ -62,10 +68,15 @@ namespace entities
         entity * _entity;
     };
 
+    class entityInterface;
+
     struct wrapper
     {
         inline wrapper(entity_handler& handle) : handle(handle) {}
         inline ~wrapper() {}
+
+
+        inline entityInterface* operator->();
 
 
         template<class _T>
@@ -92,9 +103,6 @@ namespace entities
             return *this;
         }
 
-        
-
-
         inline wrapper operator[](const char* str) {
             return this->operator[](std::string(str));
         }
@@ -118,11 +126,64 @@ namespace entities
 
         inline std::string serialize(); 
 
-    private:
+    protected:
         entity_handler& handle;
     };
 
-    class entity
+    struct ObjectWrapper : wrapper
+    {
+
+        inline auto begin();
+
+        inline auto end();
+        
+    };
+
+    struct ArrayWrapper : wrapper
+    {
+
+        inline auto begin();
+
+        inline auto end();
+        
+    };
+
+
+    struct entityInterface
+    {
+        virtual std::string   string();
+        virtual double        number();
+        virtual bool          boolean();
+
+        virtual ObjectWrapper object();
+        virtual ArrayWrapper  array();
+
+        virtual bool          isArray();
+        virtual bool          isObject();
+
+        virtual bool          isString();
+        virtual bool          isNumber();
+        virtual bool          isBoolean();
+        virtual bool          isNull();
+
+
+        virtual operator int();
+        // virtual operator long();
+        // virtual operator long long();
+        // virtual operator unsigned();
+        // virtual operator unsigned long();
+        // virtual operator unsigned long long();
+        
+        virtual operator double();
+        virtual operator bool();
+        virtual operator std::string();
+
+    protected:
+        entityInterface() = default;
+        virtual ~entityInterface() = default;
+    };
+
+    class entity : public entityInterface
     {
         friend wrapper;
         friend entity_handler;
@@ -141,19 +202,17 @@ namespace entities
         virtual wrapper get(const std::string&);
         virtual wrapper get(int);
 
-        virtual operator int();
-        // virtual operator long();
-        // virtual operator long long();
-        // virtual operator unsigned();
-        // virtual operator unsigned long();
-        // virtual operator unsigned long long();
-        
-        virtual operator double();
-        virtual operator bool();
-        virtual operator std::string();
 
         public: virtual std::string serialize()=0;
     };
+
+    entityInterface* wrapper::operator->() {
+        if(handle._entity) {
+            return handle._entity;
+        } else {
+            throw "J_WRAPPER: Entity is nullptr CAN'T operator ->";
+        }
+    }
 
     std::string wrapper::serialize() {
         if(handle._entity) {
@@ -163,15 +222,15 @@ namespace entities
         }
     }
 
-    class number : public entity
+    class Number : public entity
     {
         friend entity_handler;
     public:
-        number(double);
-        ~number();
+        Number(double);
+        ~Number();
 
-        number(const number&) = delete;
-        number(number&&) = delete;
+        Number(const Number&) = delete;
+        Number(Number&&) = delete;
 
     private:
         void set(int) override;
@@ -179,9 +238,17 @@ namespace entities
         void set(bool) override;
         
 
+
+        // Entity interface functions:
+        double          number() override;
+        std::string     string() override;
+
+        bool            isNumber() override;
+
         operator int() override;
         operator double() override;
         operator bool() override;
+
 
         std::string serialize() override;
 
@@ -193,19 +260,24 @@ namespace entities
         #endif
     };
     
-    class boolean : public entity
+    class Boolean : public entity
     {
         friend entity_handler;
     public:
-        boolean(bool);
-        ~boolean();
+        Boolean(bool);
+        ~Boolean();
 
-        boolean(const boolean&) = delete;
-        boolean(boolean&&) = delete;
+        Boolean(const Boolean&) = delete;
+        Boolean(Boolean&&) = delete;
     private:
         void set(int) override;
         void set(bool) override;
         
+        // Entity interface functions:
+        bool            boolean() override;
+        std::string     string() override;
+        
+        bool            isBoolean() override;
 
         operator int() override;
         operator bool() override;
@@ -220,21 +292,27 @@ namespace entities
         #endif
     };
 
-    class string : public entity
+    class String : public entity
     {
         friend entity_handler;
 
     public: 
-        string(const std::string&);
-        string(std::string&&);
-        ~string();
+        String(const std::string&);
+        String(std::string&&);
+        ~String();
 
-        string(const string&) = delete;
-        string(string&&) = delete;
+        String(const String&) = delete;
+        String(String&&) = delete;
         
     private:
         void set(const std::string&) override;
         void set(std::string&&) override;
+
+
+        // Entity interface functions:
+        std::string     string() override;
+        
+        bool            isString() override;
         
         operator std::string() override;
 
@@ -248,27 +326,38 @@ namespace entities
         #endif
     };
 
-    class object : public entity
+    class Object : public entity
     {
         friend entity_handler;
         friend nii::json::json;
 
     public:
-        object();
-        ~object();
-        object(object&&);
+        Object();
+        ~Object();
+        Object(Object&&);
 
-        object(const object&) = delete;
+        Object(const Object&) = delete;
 
-        object & operator=(object&&);
+        Object & operator=(Object&&);
 
-        object & operator=(const object&) = delete;
+        Object & operator=(const Object&) = delete;
+
+        inline auto begin() {
+            return value.begin();
+        }
+
+        inline auto end() {
+            return value.end();
+        }
         
     // private:
         wrapper get(const std::string& str) override;
 
 
         std::string serialize() override;
+
+        // ObjectWrapper object() override;
+        bool isObject() override;
 
 
         std::map<std::string, entity_handler> value;
@@ -279,21 +368,40 @@ namespace entities
         #endif
     };
 
-    class array : public entity
+    auto ObjectWrapper::begin() {
+        return dynamic_cast<Object*>(handle._entity)->begin();
+    }
+
+    auto ObjectWrapper::end() {
+        return dynamic_cast<Object*>(handle._entity)->end();
+    }
+
+    class Array : public entity
     {
         friend entity_handler;
     public:
-        array();
-        ~array();
+        Array();
+        ~Array();
 
-        array(const array&) = delete;
-        array(array&&) = delete;
+        Array(const Array&) = delete;
+        Array(Array&&) = delete;
+
+
+        inline auto begin() {
+            return value.begin();
+        }
+
+        inline auto end() {
+            return value.end();
+        }
+        
 
     // private:
         wrapper get(int) override;
 
         std::string serialize() override;
 
+        bool isArray() override;
 
         void push(entity*);
 
@@ -307,6 +415,14 @@ namespace entities
             inline static int count = 0;
         #endif
     };
+
+    auto ArrayWrapper::begin() {
+        return dynamic_cast<Array*>(handle._entity)->begin();
+    }
+
+    auto ArrayWrapper::end() {
+        return dynamic_cast<Array*>(handle._entity)->end();
+    }
 }
 }
 }

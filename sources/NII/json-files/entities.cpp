@@ -12,26 +12,6 @@ namespace entities
     entity::~entity()
     {}
 
-    entity::operator std::string()
-    {
-        throw "Can't convert j_entity to std::string";
-    }
-
-    entity::operator int()
-    {
-        throw "Can't convert j_entity to int";
-    }
-
-    entity::operator double()
-    {
-        throw "Can't convert j_entity to double";
-    }
-
-    entity::operator bool()
-    {
-        throw "Can't convert j_entity to bool";
-    }
-
     wrapper entity::get(const std::string&)
     {
         throw "Can't get string from j_entity";
@@ -67,6 +47,84 @@ namespace entities
     }
 
 
+    //============================== ENTITY_INTERFACE ==============================//
+    std::string entityInterface::string() 
+    {
+        throw "Can't convert EntityInterface to std::string";
+    }
+
+    double entityInterface::number()
+    {
+        throw "Can't convert EntityInterface to Number";
+    }
+
+    bool entityInterface::boolean()
+    {
+        throw "Can't convert EntityInterface to bool";
+    }
+
+    ObjectWrapper entityInterface::object()
+    {
+        throw "Can't convert EntityInterface to object";
+    }
+
+    ArrayWrapper entityInterface::array()
+    {
+        throw "Can't convert EntityInterface to array";
+    }
+
+    bool entityInterface::isArray()
+    {
+        return false;
+    }
+
+    bool entityInterface::isObject()
+    {
+        return false;
+    }
+
+    bool entityInterface::isString()
+    {
+        return false;
+    }
+
+    bool entityInterface::isNumber()
+    {
+        return false;
+    }
+
+    bool entityInterface::isBoolean()
+    {
+        return false;
+    }
+
+    bool entityInterface::isNull()
+    {
+        return false;
+    }
+
+    
+    entityInterface::operator std::string()
+    {
+        throw "Can't convert j_entity to std::string";
+    }
+
+    entityInterface::operator int()
+    {
+        throw "Can't convert j_entity to int";
+    }
+
+    entityInterface::operator double()
+    {
+        throw "Can't convert j_entity to double";
+    }
+
+    entityInterface::operator bool()
+    {
+        throw "Can't convert j_entity to bool";
+    }
+
+
     //============================== ENTITY_HANDLER ==============================//
     entity_handler::entity_handler(entity* _entity)
         : _entity(_entity)
@@ -92,10 +150,10 @@ namespace entities
 
     void entity_handler::setValue(bool b)
     {
-        boolean* obj = dynamic_cast<boolean*>(_entity);
+        Boolean* obj = dynamic_cast<Boolean*>(_entity);
         if(!obj) {
             destroyEntity();
-            _entity = obj = new boolean(b);
+            _entity = obj = new Boolean(b);
         } else {
             obj->value = b;
         }
@@ -103,10 +161,10 @@ namespace entities
 
     void entity_handler::setValue(double i)
     {
-        number* obj = dynamic_cast<number*>(_entity);
+        Number* obj = dynamic_cast<Number*>(_entity);
         if(!obj) {
             destroyEntity();
-            _entity = obj = new number(i);
+            _entity = obj = new Number(i);
         } else {
             obj->value = i;
         }
@@ -114,10 +172,10 @@ namespace entities
 
     void entity_handler::setValue(const std::string& str)
     {
-        string* obj = dynamic_cast<string*>(_entity);
+        String* obj = dynamic_cast<String*>(_entity);
         if(!obj) {
             destroyEntity();
-            _entity = obj = new string(str);
+            _entity = obj = new String(str);
         } else {
             obj->value = str;
         }
@@ -125,10 +183,10 @@ namespace entities
 
     void entity_handler::setValue(std::string&& str)
     {
-        string* obj = dynamic_cast<string*>(_entity);
+        String* obj = dynamic_cast<String*>(_entity);
         if(!obj) {
             destroyEntity();
-            _entity = obj = new string(std::move(str));
+            _entity = obj = new String(std::move(str));
         } else {
             obj->value = std::move(str);
         }
@@ -146,31 +204,31 @@ namespace entities
     }
 
     void entity_handler::addToArray(int i) {
-        array* arr = dynamic_cast<array*>(_entity);
+        Array* arr = dynamic_cast<Array*>(_entity);
         if(!arr) {
             destroyEntity();
-            _entity = arr = new array();
+            _entity = arr = new Array();
         }
-        arr->push(new number(i));
+        arr->push(new Number(i));
     }
 
     wrapper entity_handler::get(const std::string& str)
     {
-        object* obj = dynamic_cast<object*>(_entity);
+        Object* obj = dynamic_cast<Object*>(_entity);
         if(!obj) {
             destroyEntity();
-            _entity = obj = new object();
+            _entity = obj = new Object();
         }
         return obj->get(str);
     }
 
     wrapper entity_handler::get(int i)
     {
-        array* arr = dynamic_cast<array*>(_entity);
+        Array* arr = dynamic_cast<Array*>(_entity);
         if(!arr) {
             // throw "J_ENTITY_HANDLER: Can't get offset on not array";
             destroyEntity();
-            _entity = arr = new array();
+            _entity = arr = new Array();
         }
         arr->initTo(i+1);
         return arr->get(i);
@@ -193,7 +251,7 @@ namespace entities
     
     //================================ NUMBER ================================//
 
-    number::number(double i) 
+    Number::Number(double i) 
         : entity()
         , value(i)
     {
@@ -202,44 +260,59 @@ namespace entities
         #endif
     }
 
-    number::~number()
+    Number::~Number()
     {
         #ifdef NII_DEBUG
             count--;
         #endif
     }
 
-    void number::set(int i)
+    void Number::set(int i)
     {
         value = i;
     }
 
-    void number::set(double d)
+    void Number::set(double d)
     {
         value = d;
     }
 
-    void number::set(bool b)
+    void Number::set(bool b)
     {
         value = b;
     }
 
-    number::operator int()
+    Number::operator int()
     {
         return value;
     }
 
-    number::operator double()
+    Number::operator double()
     {
         return value;
     }
 
-    number::operator bool()
+    Number::operator bool()
     {
         return value;//TODO
     }
 
-    std::string number::serialize()
+    double Number::number()
+    {
+        return value;
+    }
+
+    std::string Number::string()
+    {
+        return std::to_string(value);
+    }
+
+    bool Number::isNumber()
+    {
+        return true;
+    }
+
+    std::string Number::serialize()
     {
         return std::to_string(value);
     }
@@ -248,7 +321,7 @@ namespace entities
 
      //================================ BOOLEAN ================================//
 
-    boolean::boolean(bool b) 
+    Boolean::Boolean(bool b) 
         : entity()
         , value(b)
     {
@@ -257,34 +330,49 @@ namespace entities
         #endif
     }
 
-    boolean::~boolean()
+    Boolean::~Boolean()
     {
         #ifdef NII_DEBUG
             count--;
         #endif
     }
 
-    void boolean::set(int i)
+    void Boolean::set(int i)
     {
         value = i;
     }
 
-    void boolean::set(bool b)
+    void Boolean::set(bool b)
     {
         value = b;
     }
 
-    boolean::operator int()
+    bool Boolean::boolean()
     {
         return value;
     }
 
-    boolean::operator bool()
+    std::string Boolean::string()
+    {
+        return value ? "true" : "false";
+    }
+
+    bool Boolean::isBoolean()
+    {
+        return true;
+    }
+
+    Boolean::operator int()
     {
         return value;
     }
 
-    std::string boolean::serialize()
+    Boolean::operator bool()
+    {
+        return value;
+    }
+
+    std::string Boolean::serialize()
     {
         return value ? "true" : "false";
     }
@@ -293,7 +381,7 @@ namespace entities
 
     //================================ STRING ================================//
 
-    string::string(const std::string& str) 
+    String::String(const std::string& str) 
         : entity()
         , value(str)
     {
@@ -302,7 +390,7 @@ namespace entities
         #endif
     }
 
-    string::string(std::string&& str) 
+    String::String(std::string&& str) 
         : entity()
         , value(std::move(str))
     {
@@ -311,28 +399,38 @@ namespace entities
         #endif
     }
 
-    string::~string()
+    String::~String()
     {
         #ifdef NII_DEBUG
             count--;
         #endif
     }
 
-    void string::set(const std::string& str)
+    void String::set(const std::string& str)
     {
         value = str;
     }
-    void string::set(std::string&& str)
+    void String::set(std::string&& str)
     {
         value = std::move(str);
     }
 
-    string::operator std::string()
+    std::string String::string()
     {
         return value;
     }
 
-    std::string string::serialize()
+    bool String::isString()
+    {
+        return true;
+    }
+
+    String::operator std::string()
+    {
+        return value;
+    }
+
+    std::string String::serialize()
     {
         
         return '"'+value+'"';
@@ -341,7 +439,7 @@ namespace entities
 
     //================================ OJBECT ================================//
 
-    object::object() 
+    Object::Object() 
         : entity()
         , value()
     {
@@ -350,14 +448,14 @@ namespace entities
         #endif
     }
 
-    object::~object()
+    Object::~Object()
     {
         #ifdef NII_DEBUG
             count--;
         #endif
     }
 
-    object::object(object && other)
+    Object::Object(Object && other)
         : entity()
         , value(std::move(other.value))
     {
@@ -366,17 +464,28 @@ namespace entities
         #endif
     }
 
-    object& object::operator=(object && other)
+    Object& Object::operator=(Object && other)
     {
         value = std::move(other.value);
         return *this;
     }
 
-    wrapper object::get(const std::string& str)
+    wrapper Object::get(const std::string& str)
     {
         return wrapper(value[str]);
     }
-    std::string object::serialize()
+
+    // ObjectWrapper Object::object()
+    // {
+    //     return ObjectWrapper(*this);
+    // }
+
+    bool Object::isObject()
+    {
+        return true;
+    }
+
+    std::string Object::serialize()
     {
         std::string result = "{ ";
         for(auto& a : value) {
@@ -392,7 +501,7 @@ namespace entities
 
     //================================ ARRAY ================================//
     
-    array::array()
+    Array::Array()
         : entity()
         , value()
     {
@@ -401,19 +510,24 @@ namespace entities
         #endif
     }
 
-    array::~array()
+    Array::~Array()
     {
         #ifdef NII_DEBUG
             count--;
         #endif
     }
 
-    wrapper array::get(int i)
+    wrapper Array::get(int i)
     {
         return wrapper(value.at(i));
     }
 
-    std::string array::serialize()
+    bool Array::isArray()
+    {
+        return true;
+    }
+
+    std::string Array::serialize()
     {
         std::string result = "[ ";
         for(auto iter = value.begin(); iter != value.end(); ++iter) {
@@ -425,12 +539,12 @@ namespace entities
         return result += " ]";
     }
 
-    void array::push(entity* _entity)
+    void Array::push(entity* _entity)
     {
         value.emplace_back(_entity);
     }
 
-    void array::initTo(size_t i)
+    void Array::initTo(size_t i)
     {
         if(i > value.size()) value.resize(i);
     }
