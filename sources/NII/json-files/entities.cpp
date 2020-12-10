@@ -314,7 +314,13 @@ namespace entities
 
     std::string Number::serialize()
     {
-        return std::to_string(value);
+        auto str = std::to_string(value);
+        for(auto &a : str) {
+            if( a == ',') {
+                a = '.';
+            }
+        }
+        return str;
     }
 
 
@@ -475,10 +481,10 @@ namespace entities
         return wrapper(value[str]);
     }
 
-    // ObjectWrapper Object::object()
-    // {
-    //     return ObjectWrapper(*this);
-    // }
+    ObjectWrapper Object::object()
+    {
+        return ObjectWrapper(this);
+    }
 
     bool Object::isObject()
     {
@@ -525,6 +531,11 @@ namespace entities
     bool Array::isArray()
     {
         return true;
+    }
+
+    ArrayWrapper Array::array()
+    {
+        return ArrayWrapper(this);
     }
 
     std::string Array::serialize()

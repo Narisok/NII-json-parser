@@ -10,7 +10,7 @@
 
 #include "deserializator.hpp"
 
-// #define NII_DEBUG
+//#define NII_DEBUG
 
 namespace nii
 {
@@ -130,22 +130,30 @@ namespace entities
         entity_handler& handle;
     };
 
-    struct ObjectWrapper : wrapper
+    struct ObjectWrapper
     {
+        inline ObjectWrapper(Object*obj)
+            :obj(obj)
+        {}
 
-        inline auto begin() -> std::map<std::string, entity_handler>::iterator;
+        inline auto begin();
 
-        inline auto end() -> std::map<std::string, entity_handler>::iterator;
+        inline auto end();
         
+        Object* obj;
     };
 
-    struct ArrayWrapper : wrapper
+    struct ArrayWrapper
     {
+        inline ArrayWrapper(Array*arr)
+            :arr(arr)
+        {}
 
-        inline auto begin() -> std::vector<entity_handler>::iterator;
+        inline auto begin();
 
-        inline auto end() -> std::vector<entity_handler>::iterator;
+        inline auto end();
         
+        Array* arr;
     };
 
 
@@ -342,12 +350,34 @@ namespace entities
 
         Object & operator=(const Object&) = delete;
 
-        inline auto begin() -> std::map<std::string, entity_handler>::iterator {
-            return value.begin();
+        struct iterator
+        {
+            inline iterator(std::map<std::string, entity_handler>::iterator iter)
+                :iter(iter)
+            {}
+
+            inline std::pair<std::string, wrapper> operator*() {
+                return std::make_pair(iter->first, wrapper(iter->second));
+            }
+
+            inline iterator& operator++() {
+                ++iter;
+                return *this;
+            }
+
+            inline bool operator!=(const iterator& other) {
+                return this->iter != other.iter;
+            }
+
+            std::map<std::string, entity_handler>::iterator iter;
+        };
+
+        inline iterator begin() {
+            return iterator(value.begin());
         }
 
-        inline auto end() -> std::map<std::string, entity_handler>::iterator {
-            return value.end();
+        inline iterator end() {
+            return iterator(value.end());
         }
         
     // private:
@@ -356,7 +386,7 @@ namespace entities
 
         std::string serialize() override;
 
-        // ObjectWrapper object() override;
+        ObjectWrapper object() override;
         bool isObject() override;
 
 
@@ -368,12 +398,12 @@ namespace entities
         #endif
     };
 
-    auto ObjectWrapper::begin() -> std::map<std::string, entity_handler>::iterator {
-        return dynamic_cast<Object*>(handle._entity)->begin();
+    auto ObjectWrapper::begin() {
+        return obj->begin();
     }
 
-    auto ObjectWrapper::end() -> std::map<std::string, entity_handler>::iterator {
-        return dynamic_cast<Object*>(handle._entity)->end();
+    auto ObjectWrapper::end()  {
+        return obj->end();
     }
 
     class Array : public entity
@@ -387,12 +417,34 @@ namespace entities
         Array(Array&&) = delete;
 
 
-        inline auto begin() -> std::vector<entity_handler>::iterator {
-            return value.begin();
+        struct iterator
+        {
+            inline iterator(std::vector<entity_handler>::iterator iter)
+                :iter(iter)
+            {}
+
+            inline wrapper operator*() {
+                return wrapper(*iter);
+            }
+
+            inline iterator& operator++() {
+                ++iter;
+                return *this;
+            }
+
+            inline bool operator!=(const iterator& other) {
+                return this->iter != other.iter;
+            }
+
+            std::vector<entity_handler>::iterator iter;
+        };
+
+        inline iterator begin() {
+            return iterator(value.begin());
         }
 
-        inline auto end() -> std::vector<entity_handler>::iterator {
-            return value.end();
+        inline iterator end() {
+            return iterator(value.end());
         }
         
 
@@ -407,6 +459,8 @@ namespace entities
 
         void initTo(size_t);
 
+        ArrayWrapper array() override;
+
 
         std::vector<entity_handler> value;
 
@@ -416,12 +470,12 @@ namespace entities
         #endif
     };
 
-    auto ArrayWrapper::begin() -> std::vector<entity_handler>::iterator {
-        return dynamic_cast<Array*>(handle._entity)->begin();
+    auto ArrayWrapper::begin() {
+        return arr->begin();
     }
 
-    auto ArrayWrapper::end() -> std::vector<entity_handler>::iterator {
-        return dynamic_cast<Array*>(handle._entity)->end();
+    auto ArrayWrapper::end() {
+        return arr->end();
     }
 }
 }
