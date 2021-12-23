@@ -1,2 +1,2 @@
 # json
-Json parser and generator
+Json serializator and deserializator
