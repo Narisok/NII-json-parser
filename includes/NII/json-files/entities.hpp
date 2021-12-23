@@ -126,6 +126,11 @@ namespace entities
 
         inline std::string serialize(); 
 
+        inline bool valid()
+        {
+            return handle._entity;
+        }
+
     protected:
         entity_handler& handle;
     };
