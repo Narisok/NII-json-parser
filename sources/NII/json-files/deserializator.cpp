@@ -73,7 +73,7 @@ namespace deserializator
             break;
 
             default:
-                if(*current != '0' && (isdigit(*current) || *current == '-') ) {
+                if(*current != '\0' && (isdigit(*current) || *current == '-') ) {
                     return parse_jnumber(current, end);
                 }
             }
